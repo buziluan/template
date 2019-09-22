@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router/router'
+import router from './router/index'
 import store from './store/store'
-
+import "./plugin/axios.js"
+import "./style/global.less"
 Vue.config.productionTip = false
 
 new Vue({

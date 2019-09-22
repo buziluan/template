@@ -3,21 +3,21 @@
  * @Author: 房旭
  * @Date: 2019-07-14 19:38:17
  * @LastEditors: 房旭
- * @LastEditTime: 2019-09-21 16:50:20
+ * @LastEditTime: 2019-09-22 11:57:44
  */
 
 //执行严格模式
 "use strict";
-
 import Vue from "vue";
 import axios from "axios";
-
+import { URI } from "../config/index"
+//axios配置
 let config = {
     headers: {
         //设置请求头，使用json
         "Content-Type": "application/json;charset=UTF-8",
     },
-    timeout: 600000,
+    baseURL: URI
 };
 
 //创建一个axios实例
@@ -25,12 +25,7 @@ const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
     function (config) {
-        // 发送请求前做什么
-        if (!/login$/.test(config.url)) {
-            let token = sessionStorage.getItem("token");
-            config.headers.authorization = token
-            config.headers.token_date = new Date().getTime()
-        }
+        // 发送请求前做什么（token）
         return config;
     },
     function (error) {
@@ -42,19 +37,13 @@ _axios.interceptors.request.use(
 // 添加响应拦截器
 _axios.interceptors.response.use(
     function (response) {
-        if (response.status != 200) {
-            Vue.prototype.$Message({
-                message: response.msg,
-                type: 'error'
-            });
-        }
+        //响应成功(状态码为20*)
+        console.log("响应成功",response)
         return response;
     },
     function (error) {
-        Vue.prototype.$Message({
-            message: error.response ? error.response.data.msg : error.message,
-            type: 'error'
-        });
+        //响应失败(状态码不为20*)
+        console.dir(error)
         return Promise.reject(error);
     }
 );
